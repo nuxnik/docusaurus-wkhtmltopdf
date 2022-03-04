@@ -1,15 +1,15 @@
 {
-  "name": "docusaurus-prince-pdf",
+  "name": "docusaurus-wkhtmltopdf",
   "version": "1.0.6",
   "description": "Extract rendered data from Docusaurus and generate PDF, the hard way",
   "main": "index.js",
   "bin": "index.js",
   "type": "module",
-  "repository": "https://github.com/signcl/docusaurus-prince-pdf",
-  "author": "Tunghsiao Liu",
+  "repository": "https://github.com/nuxnik/docusaurus-wkhtmltopdf",
+  "author": "nuxnik",
   "license": "MIT",
   "scripts": {
-    "test": "node index.js -u https://docusaurus.io/docs/",
+    "test": "node index.js -u https://meshtastic.org/docs/getting-started",
     "release": "npx release-it"
   },
   "publishConfig": {
@@ -23,6 +23,8 @@
   "dependencies": {
     "got": "^11.8.2",
     "jsdom": "^16.6.0",
+    "pdfmerge": "^1.0.2",
+    "wkhtmltopdf": "^0.4.0",
     "yargs": "^17.0.1"
   }
 }

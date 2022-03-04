@@ -1,17 +1,18 @@
 #!/usr/bin/env node
+
+// import packages
 import fs from 'fs';
 import { exec } from 'child_process';
-
 import got from 'got';
 import jsdom from 'jsdom';
+import wkhtmltopdf from 'wkhtmltopdf';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import pdfMerge from 'pdfmerge'
 
 const { JSDOM } = jsdom;
 const buffer = new Set();
-
 const __dirname = new URL('.', import.meta.url).pathname;
-
 const argv = yargs(hideBin(process.argv))
   .option('url', {
     alias: 'u',
@@ -50,8 +51,8 @@ const argv = yargs(hideBin(process.argv))
     description: 'Append additional pages, split with comma',
     type: 'string',
   })
-  .option('prince-args', {
-    description: 'Additional options for Prince',
+  .option('wkhtmltopdf-args', {
+    description: 'Additional options for wkhtmltopdf',
     type: 'string',
   })
   .option('list-only', {
@@ -66,13 +67,15 @@ const argv = yargs(hideBin(process.argv))
   .alias('help', 'h')
   .argv;
 
-const url = argv.url?.replace(/\/$/, '') || 'https://dev.openbayes.com';
+const url = argv.url?.replace(/\/$/, '') || 'https://meshtastic.org/docs/getting-started';
 
+// URL to scrape
 const parsedUrl = new URL(url);
 const baseUrl = parsedUrl.origin;
 const scope = parsedUrl.pathname;
 const scopeName = scope !== '/' ? `-${scope.replace(/\/$/, '').replace(/^\//, '').replace(/\//, '-')}` : '';
 
+// Output file
 const dest = argv.dest || './pdf';
 const listFile = argv.file || `${dest}/${parsedUrl.hostname}${scopeName}.txt`;
 const pdfFile = argv.output || `${dest}/${parsedUrl.hostname}${scopeName}.pdf`;
@@ -89,16 +92,34 @@ function execute(cmd) {
 }
 
 async function generatePdf(list, filename) {
-  console.log(`Generating PDF ${filename}`);
+  console.log(`Generating single pages ...`);
 
-  const args = argv.princeArgs || '';
+  const args = argv.wkhtmltopdfArgs || '';
 
-  await execute(`prince --no-warn-css --style=${__dirname}print.css --input-list=${list} -o ${filename} ${args}`).then(resp => {
-    console.log(resp.stdout);
-    console.log(`Done`);
-  }).catch(err => {
-    console.log(err);
-  });
+  // read contents of the file
+  const files = fs.readFileSync(list, 'UTF-8').toString().split("\n");
+
+  let precompiledFiles = [];
+  let i = 0;
+  for(const url of files) {
+
+    // get precompiled file name and save to array
+    let precompiled = filename.replace(/.pdf$/, '.' + i + '.pdf');
+    precompiledFiles.push(precompiled);
+
+    // generate pdf
+    wkhtmltopdf(url, {
+      output : precompiled
+    });
+    i++
+  }
+
+  // merge the files into one
+  pdfMerge(precompiledFiles, filename).then(function(done){
+    console.log(done) // success
+  }).catch(function(error){
+    console.error(error.code) // Logs error code if an error occurs
+  })
 }
 
 async function requestPage(url) {
