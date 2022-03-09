@@ -23,7 +23,7 @@
   "dependencies": {
     "got": "^11.8.2",
     "jsdom": "^16.6.0",
-    "pdfmerge": "^1.0.2",
+    "pdf-merger-js": "^3.4.0",
     "wkhtmltopdf": "^0.4.0",
     "yargs": "^17.0.1"
   }
