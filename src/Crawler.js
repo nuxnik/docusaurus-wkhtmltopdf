@@ -9,12 +9,12 @@ export default class Crawler
 {
   constructor(pdfGenerator, url, listFile, pdfFile)
   {
-    this.listFile = listFile;
-    this.pdfFile = pdfFile;
+    this.listFile     = listFile;
+    this.pdfFile      = pdfFile;
     this.pdfGenerator = pdfGenerator;
-    this.buffer = new Set();
-    this.baseUrl = url.origin;
-    this.scope = url.pathname;
+    this.buffer       = new Set();
+    this.baseUrl      = url.origin;
+    this.scope        = url.pathname;
   }
 
   async requestPage(url) {
@@ -40,18 +40,16 @@ export default class Crawler
         }
 
         if (this.buffer.size > 0) {
-          fs.writeFile(this.listFile, [...this.buffer].join('\n'), async err => {
+          fs.writeFileSync(this.listFile, [...this.buffer].join('\n'), async err => {
             console.log(`Writing buffer (${this.buffer.size} links) to ${this.listFile}`);
-
             if (err) {
               console.error(err);
               return;
             }
-
-            if (!Cli.argv.listOnly) {
-              this.pdfGenerator.generate(this.listFile, this.pdfFile);
-            }
           });
+          if (!Cli.argv.listOnly) {
+            this.pdfGenerator.generate(this.listFile, this.pdfFile);
+          }
         } else {
           console.log('No buffer to write!');
         }

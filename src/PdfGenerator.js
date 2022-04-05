@@ -7,59 +7,63 @@ export default class PdfGenerator {
   {
     this.merger           = merger;
     this.args             = args;
-    this.precompiledFiles = [];
-    this.i                = 0;
   }
 
-  generate(list, filename)
+  async generate(list, filename)
   {
     // get list of files
-    const that  = this;
     const files = fs.readFileSync(list, 'UTF-8').toString().split("\n");
-    console.log(`Generating single pages ...`);
-    Promise.all(
-      files.map((url) => {
-        that.generateSingle(url, filename).then();
-      })
-    ).then(() => {
-      return that.merge(filename);
-    });
-  }
+    console.log('Generating single pages ...');
 
-  generateSingle(url, filename) {
+    // collect the single files
+    let promises = [];
+    let precompiledFiles = [];
+    let i = 0;
+    files.forEach((url) => {
 
-    // get precompiled file name and save to array
-    let precompiled = filename.replace(/.pdf$/, '.' + this.i + '.pdf');
-    this.precompiledFiles.push(precompiled);
-    this.i++;
+      // get precompiled file name and save to array
+      let precompiled = filename.replace(/.pdf$/, '.' + i + '.pdf');
+      precompiledFiles.push(precompiled);
+      i++;
+      promises.push(this.generateSingle(url, precompiled));
+    })
 
-    // generate pdf
-    return wkhtmltopdf(url, {
-      output : precompiled
-    });
-  }
-
-  merge(filename) {
-
-    let that = this;
-    Promise.all(
-      this.precompiledFiles.map((file) => {
-        that.merger.add(file);
-      })
-    ).then(() => {
-      return that.merger.save(filename)
-        .then(() => {
-          return Promise.all(
-            this.precompiledFiles.map((file) => {
-              // delete files
-              fs.unlink(file, (err) => {
-                if (err) {
-                  throw err;
-                }
-              });
-            })
-          )
+    // resolve and merge
+    Promise.all(promises).then(async() => {
+      console.log("Merging pdf files...");
+      precompiledFiles.forEach((file) => {
+        console.log(file);
+        this.merger.add(file);
       });
+
+      // merge into one file
+      this.merger.save(filename).then(() => {
+
+        // clean up tmp files
+        console.log("cleaning up...");
+        precompiledFiles.forEach((file) => {
+          fs.unlink(file, (err) => {
+            if (err) {
+                throw err;
+            }
+          })
+        })
+      })
+    })
+  }
+
+  generateSingle(url, filename) 
+  {
+    // generate pdf
+    let stream = fs.createWriteStream(filename);
+    return new Promise((resolve, reject) => {
+      wkhtmltopdf(url).pipe(
+        fs.createWriteStream(filename)
+        .on('finish', () => {
+          console.log("Created:" + filename); 
+          resolve()
+        })
+      );
     });
   }
 }
