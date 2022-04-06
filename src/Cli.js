@@ -1,7 +1,6 @@
 //import libraries
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { exec } from 'child_process';
 
 /**
  * configure the cli options
