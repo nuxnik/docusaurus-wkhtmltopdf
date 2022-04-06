@@ -64,17 +64,4 @@ export default class Cli
     .help()
     .alias('help', 'h')
     .argv;
-
-  /**
-   * Execute a command
-   */
-  static execute(cmd) {
-    const s = (b) => String(b).trim();
-    return new Promise((resolve, reject) => {
-      exec(cmd, (error, stdout, stderr) => {
-        if (error) return reject(error);
-        resolve({ stdout: s(stdout), stderr: s(stderr) });
-      });
-    });
-  }
 }
