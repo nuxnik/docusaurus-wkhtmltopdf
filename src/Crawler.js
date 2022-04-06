@@ -15,12 +15,18 @@ export default class Crawler
     this.buffer       = new Set();
     this.baseUrl      = url.origin;
     this.scope        = url.pathname;
+    this.tocHTML      = '<h1>Table of Contents</h1>';
   }
 
   async requestPage(url) {
     await got(url).then(resp => {
+      this.buffer.add(url);
       const dom = new JSDOM(resp.body);
       const nextLinkEl = dom.window.document.querySelector(Cli.argv.selector || '.pagination-nav__item--next > a');
+      const toc = dom.window.document.querySelectorAll('h1', 'h2', 'h3', 'h4', 'h5', 'h6');
+      toc.forEach( item => {
+        this.tocHTML += '<h2>' + item.innerHTML + '</h2>';
+      })
 
       if (nextLinkEl) {
         const nextLink = `${this.baseUrl}${nextLinkEl.href}`;
@@ -48,7 +54,7 @@ export default class Crawler
             }
           });
           if (!Cli.argv.listOnly) {
-            this.pdfGenerator.generate(this.listFile, this.pdfFile);
+            this.pdfGenerator.generate(this.listFile, this.pdfFile, this.tocHTML);
           }
         } else {
           console.log('No buffer to write!');

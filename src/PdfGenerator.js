@@ -9,7 +9,7 @@ export default class PdfGenerator {
     this.args             = args;
   }
 
-  async generate(list, filename)
+  async generate(list, filename, toc)
   {
     // get list of files
     const files = fs.readFileSync(list, 'UTF-8').toString().split("\n");
@@ -19,6 +19,12 @@ export default class PdfGenerator {
     let promises = [];
     let precompiledFiles = [];
     let i = 0;
+
+    // add the toc
+    let tocFile = './pdf/toc.pdf';
+    precompiledFiles.push(tocFile);
+    promises.push(this.generateSingle(toc, tocFile));
+
     files.forEach((url) => {
 
       // get precompiled file name and save to array
@@ -57,7 +63,7 @@ export default class PdfGenerator {
     // generate pdf
     let stream = fs.createWriteStream(filename);
     return new Promise((resolve, reject) => {
-      wkhtmltopdf(url).pipe(
+      wkhtmltopdf(url, {userStyleSheet: './print.css', marginTop: 15, marginRight: 15, marginBottom: 15, marginLeft: 15}).pipe(
         fs.createWriteStream(filename)
         .on('finish', () => {
           console.log("Created:" + filename); 

@@ -7,10 +7,9 @@
 
   .markdown header h1 { string-set: doctitle content() }
 
-  @page {
-    prince-shrink-to-fit: auto;
+  header {
+      display: block; font-size: 2em; margin-top: 0.67em; margin-bottom: 0.67em; margin-left: 0; margin-right: 0; font-weight: bold;
   }
-
   /* Elements should be removed in PDF */
   .navbar,
   .pagination-nav,
