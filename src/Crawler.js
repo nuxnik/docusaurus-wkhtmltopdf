@@ -1,12 +1,21 @@
-import got from 'got';
-import jsdom from 'jsdom';
+// import modules
 import Cli from './Cli.js';
 import fs from 'fs';
+import got from 'got';
+import { JSDOM } from 'jsdom';
 
-const { JSDOM } = jsdom;
-
+/**
+ * Crawl a docusaurus URL and scrape the data
+ */
 export default class Crawler
 {
+  /**
+   * The class constructor
+   *
+   * @param PdfGenerator pdfgenerator The pdfgenerator object
+   * @param string listFile The file containing the urls the scrape
+   * @param string pdfFile The pdf file to output the data to
+   */
   constructor(pdfGenerator, url, listFile, pdfFile)
   {
     this.listFile     = listFile;
@@ -18,25 +27,40 @@ export default class Crawler
     this.tocHTML      = '<h1>Table of Contents</h1>';
   }
 
+  /**
+   * Make a request to the page and scrape the data
+   *
+   * @param string url The url to scrape
+   */
   async requestPage(url) {
     await got(url).then(resp => {
+
+      // add the initial url to the buffer
       this.buffer.add(url);
+
+      // read the DOM data from the response
       const dom = new JSDOM(resp.body);
+
+      // get the next page
       const nextLinkEl = dom.window.document.querySelector(Cli.argv.selector || '.pagination-nav__item--next > a');
+
+      // Get the header tags from the source and add the HTML
       const toc = dom.window.document.querySelectorAll('h1', 'h2', 'h3', 'h4', 'h5', 'h6');
       toc.forEach( item => {
+
+        // TODO - separate this into a template file
         this.tocHTML += '<h2>' + item.innerHTML + '</h2>';
       })
 
       if (nextLinkEl) {
         const nextLink = `${this.baseUrl}${nextLinkEl.href}`;
         console.log(`Got link: ${nextLink}`);
-
         this.buffer.add(nextLink);
         this.requestPage(nextLink);
       } else {
         console.log('No next link found!');
 
+        // append additional urls
         if (Cli.argv.append) {
           Cli.argv.append.split(',').map(item => {
             const url = item.match(/^https?:\/\//) ? item : `${this.baseUrl}${this.scope}${item}`;
@@ -45,6 +69,7 @@ export default class Crawler
           });
         }
 
+        // write the data buffer to the list file
         if (this.buffer.size > 0) {
           fs.writeFileSync(this.listFile, [...this.buffer].join('\n'), async err => {
             console.log(`Writing buffer (${this.buffer.size} links) to ${this.listFile}`);
@@ -53,6 +78,8 @@ export default class Crawler
               return;
             }
           });
+
+          // generate the PDF
           if (!Cli.argv.listOnly) {
             this.pdfGenerator.generate(this.listFile, this.pdfFile, this.tocHTML);
           }
@@ -63,5 +90,7 @@ export default class Crawler
     }).catch(err => {
       console.log(`Error:`, err);
     });
+
+    return this;
   }
 }
