@@ -14,16 +14,16 @@ Run the following commands to generate PDF:
 
 ```bash
 # Genrate PDF from specific site under `docs` scope
-npx docusaurus-wkhtmltopdf -u https://docusaurus.io/docs
+npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs
 
 # Change generating scope to `/docs/cli/`
-npx docusaurus-wkhtmltopdf -u https://docusaurus.io/docs/cli
+npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/cli
 
 # Custom working (output) directory
-npx docusaurus-wkhtmltopdf -u https://openbayes.com/docs --dest ./pdf-output
+npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs --dest ./pdf-output
 
 # Custom output file name
-npx docusaurus-wkhtmltopdf -u https://openbayes.com/docs --output docs.pdf
+npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs --output docs.pdf
 ```
 
 To generate PDF from a local Docusaurus instance. You need to first build the site locally:
@@ -47,10 +47,10 @@ npx docusaurus-wkhtmltpdf -h
 
 ## How it works
 
-Like [mr-pdf](https://github.com/kohheepeace/mr-pdf), this package looks for the next pagination links on generated Docusaurus site. Collect them in a list and then pass the list to Prince to generate the PDF.
+Like [mr-pdf](https://github.com/kohheepeace/mr-pdf), this package looks for the next pagination links on generated Docusaurus site. Collect them in a list and then pass the list to wkhtmltopdf to generate the PDF.
 
 You can specify the CSS selector if you're using custom Docusaurus theme:
 
 ```bash
-npx docusaurus-wkhtmltopdf -u https://openbayes.com/ --selector 'nav.custom-pagination-item--next > a'
+npx docusaurus-wkhtmltopdf -u https://meshtastic.org/ --selector 'nav.custom-pagination-item--next > a'
 ```

@@ -1,4 +1,5 @@
 // import modules
+import Cli from './Cli.js';
 import fs from 'fs';
 import wkhtmltopdf from 'wkhtmltopdf';
 
@@ -10,13 +11,11 @@ export default class PdfGenerator {
   /**
    * The class constructor
    *
-   * @param array args The CLI arguments
    * @param PDFMerger merger The PDFMerger object 
    */
-  constructor(args, merger)
+  constructor(merger)
   {
     this.merger = merger;
-    this.args   = args;
   }
 
   /**
@@ -36,9 +35,11 @@ export default class PdfGenerator {
     let i                = 0;
 
     // add the toc to the PDF
-    let tocFile = this.args.dest + '/toc.pdf';
-    precompiledFiles.push(tocFile);
-    promises.push(this.generateSingle(toc, tocFile));
+    if (Cli.argv.toc) {
+      let tocFile = Cli.argv.dest + '/toc.pdf';
+      precompiledFiles.push(tocFile);
+      promises.push(this.generateSingle(toc, tocFile));
+    }
 
     // iteratr the urls and generate single PDFs
     files.forEach((url) => {
@@ -71,7 +72,6 @@ export default class PdfGenerator {
           })
         })
       })
-
     })
 
 

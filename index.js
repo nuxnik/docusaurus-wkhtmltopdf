@@ -14,7 +14,7 @@ const argv = Cli.argv;
 const url = Cli.argv.url?.replace(/\/$/, '') || 'https://meshtastic.org/docs/getting-started';
 
 // Output file
- argv.dest         = argv.dest || './pdf';
+argv.dest          = argv.dest || './pdf';
 const parsedUrl    = new URL(url);
 const baseUrl      = parsedUrl.origin;
 const scope        = parsedUrl.pathname;
@@ -22,7 +22,7 @@ const scopeName    = scope !== '/' ? `-${scope.replace(/\/$/, '').replace(/^\//,
 const listFile     = argv.file || `${argv.dest}/${parsedUrl.hostname}${scopeName}.txt`;
 const pdfFile      = argv.output || `${argv.dest}/${parsedUrl.hostname}${scopeName}.pdf`;
 const merger       = new PDFMerger();
-const pdfGenerator = new PdfGenerator(argv, merger);
+const pdfGenerator = new PdfGenerator(merger);
 const crawler      = new Crawler(pdfGenerator, parsedUrl, listFile, pdfFile);
 
 // make output folder

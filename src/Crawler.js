@@ -45,12 +45,16 @@ export default class Crawler
       const nextLinkEl = dom.window.document.querySelector(Cli.argv.selector || '.pagination-nav__item--next > a');
 
       // Get the header tags from the source and add the HTML
-      const toc = dom.window.document.querySelectorAll('h1', 'h2', 'h3', 'h4', 'h5', 'h6');
-      toc.forEach( item => {
+      if (Cli.argv.toc) {
+        const toc = dom.window.document.querySelectorAll('h1', 'h2', 'h3', 'h4', 'h5', 'h6');
+        toc.forEach( item => {
 
-        // TODO - separate this into a template file
-        this.tocHTML += '<h2>' + item.innerHTML + '</h2>';
-      })
+          // TODO - separate this into a template file
+          this.tocHTML += '<h2>' + item.innerHTML + '</h2>';
+        })
+      } else {
+        this.tocHTML = '';
+      }
 
       if (nextLinkEl) {
         const nextLink = `${this.baseUrl}${nextLinkEl.href}`;

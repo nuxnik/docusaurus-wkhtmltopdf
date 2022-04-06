@@ -60,6 +60,10 @@ export default class Cli
       description: 'Generate PDF without fetching list. Ensure list exists',
       type: 'bolean',
     })
+    .option('toc', {
+      description: 'Generate the PDF with a table of contents',
+      type: 'bolean',
+    })
     .help()
     .alias('help', 'h')
     .argv;
