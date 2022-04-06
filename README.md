@@ -1,6 +1,6 @@
 # Docusaurus PDF Generator Using WKHTMLTOPDF
 
-Note: This is a fork from [docusaurus-prince-pdf](https://github.com/signcl/docusaurus-prince-pdf) and has been re-purposed to use wkhtmltopdf instead of Prince PDF. This project is a work in progress, use at your own discretion!
+Note: This is a fork and complete re-write of [docusaurus-prince-pdf](https://github.com/signcl/docusaurus-prince-pdf). It has been re-purposed to use wkhtmltopdf instead of Prince PDF. This project is a work in progress, use at your own discretion!
 
 [![npm version](https://img.shields.io/npm/v/docusaurus-wkhtmltopdf.svg?style=flat)](https://www.npmjs.com/package/docusaurus-wkhtmltopdf)
 
