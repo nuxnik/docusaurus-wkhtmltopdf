@@ -25,6 +25,21 @@ export default class Crawler
     this.baseUrl      = url.origin;
     this.scope        = url.pathname;
     this.tocHTML      = '<h1>Table of Contents</h1>';
+
+    // prepend urls to crawler
+    if (Cli.argv.prepend) {
+      Cli.argv.prepend.split(',').map(item => {
+        const url = item.match(/^https?:\/\//) ? item : `${this.baseUrl}${this.scope}${item}`;
+        this.buffer.add(url);
+        console.log(`Got link: ${url} [prepend]`);
+      });
+    }
+
+    // include index
+    if (Cli.argv.includeIndex) {
+      console.log(`Got link: ${this.baseUrl}${this.scope} [index]`);
+      this.buffer.add(`${this.baseUrl}${this.scope}`);
+    }
   }
 
   /**
@@ -33,6 +48,8 @@ export default class Crawler
    * @param string url The url to scrape
    */
   async requestPage(url) {
+
+    // get the URL
     await got(url).then(resp => {
 
       // add the initial url to the buffer

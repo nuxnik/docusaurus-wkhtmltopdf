@@ -63,7 +63,7 @@ export default class PdfGenerator {
 
         // clean up tmp files
         console.log("cleaning up temporary files ...");
-        precompiledFiles.push(list);
+        //precompiledFiles.push(list);
         precompiledFiles.forEach((file) => {
           fs.unlink(file, (err) => {
             if (err) {

@@ -28,24 +28,11 @@ const crawler      = new Crawler(pdfGenerator, parsedUrl, listFile, pdfFile);
 // make output folder
 !fs.existsSync(argv.dest) && fs.mkdirSync(argv.dest);
 
-// generate the pdf
 if (argv.pdfOnly) {
+
+  // generate the pdf without crawling
   pdfGenerator.generate(listFile, pdfFile);
 } else {
-
-  // prepend urls to crawler
-  if (argv.prepend) {
-    argv.prepend.split(',').map(item => {
-      const url = item.match(/^https?:\/\//) ? item : `${baseUrl}${scope}${item}`;
-      buffer.add(url);
-      console.log(`Got link: ${url} [prepend]`);
-    });
-  }
-
-  if (argv.includeIndex) {
-    console.log(`Got link: ${baseUrl}${scope} [index]`);
-    buffer.add(`${baseUrl}${scope}`);
-  }
 
   // crawl the starting page
   crawler.requestPage(`${baseUrl}${scope}`);

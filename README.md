@@ -14,16 +14,16 @@ Run the following commands to generate PDF:
 
 ```bash
 # Genrate PDF from specific site under `docs` scope
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs
+npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/getting-started
 
-# Change generating scope to `/docs/cli/`
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/cli
+# Change generating scope to `/docs/xxx/`
+npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/xxx
 
 # Custom working (output) directory
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs --dest ./pdf-output
+npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/getting-started --dest ./pdf-output
 
 # Custom output file name
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs --output docs.pdf
+npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/getting-started --output docs.pdf
 ```
 
 To generate PDF from a local Docusaurus instance. You need to first build the site locally:
@@ -52,5 +52,5 @@ Like [mr-pdf](https://github.com/kohheepeace/mr-pdf), this package looks for the
 You can specify the CSS selector if you're using custom Docusaurus theme:
 
 ```bash
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/ --selector 'nav.custom-pagination-item--next > a'
+npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/getting-started --selector 'nav.custom-pagination-item--next > a'
 ```
