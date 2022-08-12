@@ -59,7 +59,7 @@ export default class Crawler
       const dom = new JSDOM(resp.body);
 
       // get the next page
-      const nextLinkEl = dom.window.document.querySelector(Cli.argv.selector || '.pagination-nav__item--next > a');
+      const nextLinkEl = dom.window.document.querySelector(Cli.argv.selector || '.pagination-nav__link--next');
 
       // Get the header tags from the source and add the HTML
       if (Cli.argv.toc) {
@@ -76,42 +76,52 @@ export default class Crawler
       if (nextLinkEl) {
         const nextLink = `${this.baseUrl}${nextLinkEl.href}`;
         console.log(`Got link: ${nextLink}`);
-        this.buffer.add(nextLink);
-        this.requestPage(nextLink);
-      } else {
-        console.log('No next link found!');
-
-        // append additional urls
-        if (Cli.argv.append) {
-          Cli.argv.append.split(',').map(item => {
-            const url = item.match(/^https?:\/\//) ? item : `${this.baseUrl}${this.scope}${item}`;
-            this.buffer.add(url);
-            console.log(`Got link: ${url} [append]`);
-          });
-        }
-
-        // write the data buffer to the list file
-        if (this.buffer.size > 0) {
-          fs.writeFileSync(this.listFile, [...this.buffer].join('\n'), async err => {
-            console.log(`Writing buffer (${this.buffer.size} links) to ${this.listFile}`);
-            if (err) {
-              console.error(err);
-              return;
-            }
-          });
-
-          // generate the PDF
-          if (!Cli.argv.listOnly) {
-            this.pdfGenerator.generate(this.listFile, this.pdfFile, this.tocHTML);
-          }
+        if (!this.buffer.has(nextLink)) {
+          this.buffer.add(nextLink);
+          this.requestPage(nextLink);
         } else {
-          console.log('No buffer to write!');
+          this.genDoc(url);
         }
+      } else {
+        this.genDoc(url);
       }
     }).catch(err => {
       console.log(`Error:`, err);
     });
 
     return this;
+  }
+
+  genDoc(url)
+  {
+    console.log('No next link found!');
+
+    // append additional urls
+    if (Cli.argv.append) {
+      Cli.argv.append.split(',').map(item => {
+        const url = item.match(/^https?:\/\//) ? item : `${this.baseUrl}${this.scope}${item}`;
+        this.buffer.add(url);
+        console.log(`Got link: ${url} [append]`);
+      });
+    }
+
+    // write the data buffer to the list file
+    if (this.buffer.size > 0) {
+      fs.writeFileSync(this.listFile, [...this.buffer].join('\n'), async err => {
+        console.log(`Writing buffer (${this.buffer.size} links) to ${this.listFile}`);
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+
+      // generate the PDF
+      if (!Cli.argv.listOnly) {
+        this.pdfGenerator.generate(this.listFile, this.pdfFile, this.tocHTML);
+      }
+    } else {
+      console.log('No buffer to write!');
+    }
+
   }
 }

@@ -9,7 +9,7 @@
   "author": "nuxnik",
   "license": "MIT",
   "scripts": {
-    "test": "node index.js -u https://meshtastic.org/docs/getting-started",
+    "test": "node index.js --toc -u https://meshtastic.org/docs/getting-started",
     "release": "npx release-it"
   },
   "publishConfig": {

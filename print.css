@@ -22,4 +22,7 @@
   .footer {
     display: none !important;
   }
+  body {
+    page-break-inside:avoid;
+  }
 }

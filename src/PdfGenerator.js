@@ -41,7 +41,7 @@ export default class PdfGenerator {
       promises.push(this.generateSingle(toc, tocFile));
     }
 
-    // iteratr the urls and generate single PDFs
+    // iterate the urls and generate single PDFs
     files.forEach((url) => {
 
       // get precompiled file name and save to array
