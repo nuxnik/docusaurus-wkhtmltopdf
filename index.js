@@ -15,7 +15,7 @@ const argv = Cli.argv;
 const url = Cli.argv.url?.replace(/\/$/, '') || 'https://docusaurus.io/docs';
 
 // Output file
-argv.dest          = argv.dest || './pdf';
+argv.dest          = argv.dest || process.cwd() + '/pdf';
 const parsedUrl    = new URL(url);
 const baseUrl      = parsedUrl.origin;
 const scope        = parsedUrl.pathname;
@@ -58,5 +58,6 @@ Promise.all(promises).then(() => {
 
   // throw error and exit
   console.log(`Error: the following software must be installed on this machine: ` + commands);
+  console.log(err);
   process.exit(11);
 });
