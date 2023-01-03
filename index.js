@@ -30,7 +30,7 @@ const crawler      = new Crawler(pdfGenerator, parsedUrl, listFile, pdfFile);
 let commands = [
     'wkhtmltopdf',
 ];
-if (argv.compressed) {
+if (argv.compress) {
   commands.push('gs')
 }
 let promises = [];

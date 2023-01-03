@@ -115,7 +115,7 @@ export default class PdfGenerator {
 
     // compress the document
     return new Promise((resolve, reject) => {
-      if (Cli.argv.compressed) {
+      if (Cli.argv.compress) {
         console.log("Compressing file " + filename + ' ...'); 
         gs()
           .device( 'pdfwrite' )
