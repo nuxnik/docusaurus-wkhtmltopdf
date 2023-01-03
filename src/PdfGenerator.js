@@ -93,7 +93,7 @@ export default class PdfGenerator {
     return new Promise((resolve, reject) => {
 
       // TODO make options configurable from external arguments
-      wkhtmltopdf(url, {userStyleSheet: process.env.PWD + '/print.css', marginTop: 15, marginRight: 15, marginBottom: 15, marginLeft: 15}).pipe(
+      wkhtmltopdf(url, {userStyleSheet: './print.css', marginTop: 15, marginRight: 15, marginBottom: 15, marginLeft: 15}).pipe(
         fs.createWriteStream(filename)
         .on('finish', () => {
           //console.log("Created:" + filename); 

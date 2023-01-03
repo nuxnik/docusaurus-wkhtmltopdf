@@ -15,7 +15,7 @@ const argv = Cli.argv;
 const url = Cli.argv.url?.replace(/\/$/, '') || 'https://docusaurus.io/docs';
 
 // Output file
-argv.dest          = argv.dest || process.env.PWD + '/pdf';
+argv.dest          = argv.dest || './pdf';
 const parsedUrl    = new URL(url);
 const baseUrl      = parsedUrl.origin;
 const scope        = parsedUrl.pathname;
@@ -30,13 +30,16 @@ const crawler      = new Crawler(pdfGenerator, parsedUrl, listFile, pdfFile);
 let commands = [
     'wkhtmltopdf',
 ];
+
 if (argv.compress) {
   commands.push('gs')
 }
+
 let promises = [];
 commands.forEach((command) => {
     promises.push(commandExists(command));
 });
+
 Promise.all(promises).then(() => {
 
   // All is good. Make output folder
@@ -44,12 +47,12 @@ Promise.all(promises).then(() => {
 
   if (argv.pdfOnly) {
 
-  // generate the pdf without crawling
-  pdfGenerator.generate(listFile, pdfFile);
+    // generate the pdf without crawling
+    pdfGenerator.generate(listFile, pdfFile);
   } else {
 
-  // crawl the starting page
-  crawler.requestPage(`${baseUrl}${scope}`);
+    // crawl the starting page
+    crawler.requestPage(`${baseUrl}${scope}`);
   }
 }).catch(err => {
 
