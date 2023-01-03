@@ -134,6 +134,8 @@ export default class PdfGenerator {
               resolve("Success: compression complete");
             }
           });
+      } else {
+        resolve("Skipping compression");
       }
     });
   }
