@@ -1,6 +1,7 @@
 // import modules
 import Cli from './Cli.js';
 import fs from 'fs';
+import gs from 'node-gs';
 import wkhtmltopdf from 'wkhtmltopdf';
 
 /**
@@ -61,19 +62,21 @@ export default class PdfGenerator {
       // merge into one file
       this.merger.save(filename).then(() => {
 
-        // clean up tmp files
-        console.log("cleaning up temporary files ...");
-        //precompiledFiles.push(list);
-        precompiledFiles.forEach((file) => {
-          fs.unlink(file, (err) => {
-            if (err) {
-                throw err;
-            }
-          })
-        })
-      })
-    })
+        this.compressFile(filename).then(() => {
 
+          // clean up tmp files
+          console.log("cleaning up temporary files ...");
+          //precompiledFiles.push(list);
+          precompiledFiles.forEach((file) => {
+            fs.unlink(file, (err) => {
+              if (err) {
+                  throw err;
+              }
+            })
+          });
+        });
+      });
+    })
 
     return this;
   }
@@ -86,9 +89,6 @@ export default class PdfGenerator {
    */
   generateSingle(url, filename) 
   {
-    // generate pdf
-    let stream = fs.createWriteStream(filename);
-
     // wrap PDF maker in a promise
     return new Promise((resolve, reject) => {
 
@@ -103,5 +103,38 @@ export default class PdfGenerator {
     });
 
     return this;
+  }
+
+  /**
+   * compress the pdf file
+   * @param string filename The filename of the PDF which will be compressed
+   */
+  compressFile(filename)
+  {
+    let newFilename = filename.replace(/.pdf$/, '-compressed.pdf');
+
+    // compress the document
+    return new Promise((resolve, reject) => {
+      if (Cli.argv.compressed) {
+        console.log("Compressing file " + filename + ' ...'); 
+        gs()
+          .device( 'pdfwrite' )
+          .option( '-dCompatibilityLevel=1.4' )
+          .option( '-dPDFSETTINGS=/ebook' )
+          .nopause()
+          .quiet()
+          .batch()
+          .input( filename )
+          .output( newFilename )
+          //.executablePath( 'ghostscript/bin/./gs' )
+          .exec( ( error, stdout, stderr ) => {
+            if ( error ) {
+              reject("Failed: compression process failed");
+            } else {
+              resolve("Success: compression complete");
+            }
+          });
+      }
+    });
   }
 }

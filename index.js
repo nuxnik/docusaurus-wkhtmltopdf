@@ -5,6 +5,7 @@ import Cli from './src/Cli.js';
 import Crawler from './src/Crawler.js';
 import PDFMerger from 'pdf-merger-js';
 import PdfGenerator from './src/PdfGenerator.js';
+import commandExists from 'command-exists';
 import fs from 'fs';
 
 // get the arguments
@@ -25,15 +26,34 @@ const merger       = new PDFMerger();
 const pdfGenerator = new PdfGenerator(merger);
 const crawler      = new Crawler(pdfGenerator, parsedUrl, listFile, pdfFile);
 
-// make output folder
-!fs.existsSync(argv.dest) && fs.mkdirSync(argv.dest);
+// do a sanity check for required software
+let commands = [
+    'wkhtmltopdf',
+];
+if (argv.compressed) {
+  commands.push('gs')
+}
+let promises = [];
+commands.forEach((command) => {
+    promises.push(commandExists(command));
+});
+Promise.all(promises).then(() => {
 
-if (argv.pdfOnly) {
+  // All is good. Make output folder
+  !fs.existsSync(argv.dest) && fs.mkdirSync(argv.dest);
+
+  if (argv.pdfOnly) {
 
   // generate the pdf without crawling
   pdfGenerator.generate(listFile, pdfFile);
-} else {
+  } else {
 
   // crawl the starting page
   crawler.requestPage(`${baseUrl}${scope}`);
-}
+  }
+}).catch(err => {
+
+  // throw error and exit
+  console.log(`Error: the following software must be installed on this machine: ` + commands);
+  process.exit(11);
+});

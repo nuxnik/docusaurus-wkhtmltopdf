@@ -64,6 +64,10 @@ export default class Cli
       description: 'Generate the PDF with a table of contents',
       type: 'bolean',
     })
+    .option('compress', {
+      description: 'Compress the output file. REQUIRES ghostscript!',
+      type: 'bolean',
+    })
     .help()
     .alias('help', 'h')
     .argv;
