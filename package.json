@@ -9,8 +9,8 @@
   "author": "nuxnik",
   "license": "MIT",
   "scripts": {
-    "test": "node index.js --toc -u https://meshtastic.org/docs/getting-started",
-    "test-single": "node index.js --toc -s no-select -u https://meshtastic.org/docs/getting-started",
+    "test": "node index.js --toc -u https://docusaurus.io/docs",
+    "test-single": "node index.js --toc -s no-select -u https://docusaurus.io/docs",
     "release": "npx release-it"
   },
   "publishConfig": {
