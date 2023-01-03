@@ -10,6 +10,7 @@
   "license": "MIT",
   "scripts": {
     "test": "node index.js --toc -u https://meshtastic.org/docs/getting-started",
+    "test-single": "node index.js --toc -s no-select -u https://meshtastic.org/docs/getting-started",
     "release": "npx release-it"
   },
   "publishConfig": {
@@ -21,8 +22,10 @@
     }
   },
   "dependencies": {
+    "command-exists": "^1.2.9",
     "got": "^11.8.2",
     "jsdom": "^16.6.0",
+    "node-gs": "^0.1.1",
     "pdf-merger-js": "^3.4.0",
     "wkhtmltopdf": "^0.4.0",
     "yargs": "^17.0.1"
