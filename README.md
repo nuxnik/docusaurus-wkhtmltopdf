@@ -36,19 +36,19 @@ Run the following commands to generate the PDF:
 
 ```bash
 # Genrate PDF from specific site under `docs` scope
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/getting-started
+npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs
 
 # Change generating scope to `/docs/xxx/`
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/xxx
+npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs/xxx
 
 # Custom working (output) directory
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/getting-started --dest ./pdf-output
+npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --dest ./pdf-output
 
 # Custom output file name
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/getting-started --output docs.pdf
+npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --output docs.pdf
 
 # Compress the PDF file
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/getting-started --compress
+npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --compress
 ```
 
 To generate PDF from a local Docusaurus instance. You need to first build the site locally:
@@ -80,23 +80,22 @@ NOTE: the generated pdfs are saved to /d2p/pdf in the container.
 
 ```bash
 # Generate PDF from specific site under `docs` scope 
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://meshtastic.org/docs/getting-started
+docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs
 
 # Change generating scope to `/docs/xxx/`
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/xxx
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://meshtastic.org/docs/xxx
+docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs/xxx
 
 # Custom working (output) directory
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://meshtastic.org/docs/getting-started --dest ./pdf-output
+docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs --dest ./pdf-output
 
 # Custom output file name
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://meshtastic.org/docs/getting-started --output docs.pdf
+docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs --output docs.pdf
 
 # Compress the PDF file
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://meshtastic.org/docs/getting-started --compress
+docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs --compress
 
 # Add a rudmentary table of contents
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://meshtastic.org/docs/getting-started --toc
+docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs --toc
 ```
 
 ## How it works
@@ -106,5 +105,5 @@ Like [mr-pdf](https://github.com/kohheepeace/mr-pdf), this package looks for the
 You can specify the CSS selector if you're using a custom Docusaurus theme:
 
 ```bash
-npx docusaurus-wkhtmltopdf -u https://meshtastic.org/docs/getting-started --selector 'nav.custom-pagination-item--next > a'
+npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --selector 'nav.custom-pagination-item--next > a'
 ```
