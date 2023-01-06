@@ -6,6 +6,12 @@ Extract rendered data from Docusaurus and generate PDF, the hard way. Note that 
 
 ## Command Help
 
+See help screen for more options:
+
+```bash
+npx docusaurus-wkhtmltpdf --help
+```
+Will output:
 ```
 Options:
       --version           Show version number                          [boolean]
@@ -23,6 +29,8 @@ Options:
       --pdf-only          Generate PDF without fetching list. Ensure list exists
       --toc               Generate the PDF with a table of contents
       --compress          Compress the output file. REQUIRES ghostscript!
+      --stdout            Stream PDF to stdout
+      --quiet             silence console output.
   -h, --help              Show help                                    [boolean]
 ```
 
@@ -38,17 +46,8 @@ Run the following commands to generate the PDF:
 # Genrate PDF from specific site under `docs` scope
 npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs
 
-# Change generating scope to `/docs/xxx/`
-npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs/xxx
-
-# Custom working (output) directory
-npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --dest ./pdf-output
-
-# Custom output file name
-npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --output docs.pdf
-
-# Compress the PDF file
-npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --compress
+# Example with more flags: create table of contents, compress the file, and pipe to stdout
+npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --compress --toc --stdout > documentation.pdf
 ```
 
 To generate PDF from a local Docusaurus instance. You need to first build the site locally:
@@ -64,12 +63,6 @@ yarn serve
 npx docusaurus-wkhtmltopdf -u http://localhost:4000/docs # Change port to your serving port
 ```
 
-See help screen for more usages:
-
-```bash
-npx docusaurus-wkhtmltpdf -h
-```
-
 ## Docker Usage
 
 The docker image comes with a working environment so no other external software is needed.
@@ -79,26 +72,14 @@ Run the following commands to generate your desired PDF:
 NOTE: the generated pdfs are saved to /d2p/pdf in the container.
 
 ```bash
-# Generate PDF from specific site under `docs` scope 
+# Generate PDF from specific site under `docs` scope. Note the folder with the generated file can be found in /tmp/pdf
 docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs
 
-# Change generating scope to `/docs/xxx/`
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs/xxx
-
-# Custom working (output) directory
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs --dest ./pdf-output
-
-# Custom output file name
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs --output docs.pdf
-
-# Compress the PDF file
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs --compress
-
-# Add a rudmentary table of contents
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs --toc
+# Example with more flags: create table of contents, compress the file, and pipe from stdout to documentation.pdf
+docker run --rm nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs --toc --compress --stdout > documentation.pdf
 ```
 
-## How it works
+## Modifications
 
 Like [mr-pdf](https://github.com/kohheepeace/mr-pdf), this package looks for the next pagination links on generated Docusaurus site. Collect them in a list and then pass the list to wkhtmltopdf to generate the PDF.
 
@@ -107,3 +88,4 @@ You can specify the CSS selector if you're using a custom Docusaurus theme:
 ```bash
 npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --selector 'nav.custom-pagination-item--next > a'
 ```
+You can also customize the CSS of the pages which scraped by the crawler. These changes can be added to the "print.css" file located in the project root. This CSS file is applied to the pages they are generated through Wkhtmltopdf. Depending on how this file is modified, will determine the quality and readability of the generated PDF file.
