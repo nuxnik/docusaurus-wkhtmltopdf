@@ -3,6 +3,7 @@ import Cli from './Cli.js';
 import fs from 'fs';
 import gs from 'node-gs';
 import wkhtmltopdf from 'wkhtmltopdf';
+import log from './tools.js';
 
 /**
  * Generate a PDF
@@ -26,10 +27,10 @@ export default class PdfGenerator {
    * @param string filename The output file name
    * @param string toc The HTML for the table of contents
    */
-  async generate(list, filename, toc)
+  generate(list, filename, toc)
   {
     // get list of files
-    console.log('Generating single pages ...');
+    log('Generating single pages ...');
     const files          = fs.readFileSync(list, 'UTF-8').toString().split("\n");
     let promises         = [];
     let precompiledFiles = [];
@@ -54,7 +55,7 @@ export default class PdfGenerator {
 
     // resolve all the promises then merge the files into one
     Promise.all(promises).then(() => {
-      console.log("Merging pdf files ...");
+      log("Merging pdf files ...");
       precompiledFiles.forEach((file) => {
         this.merger.add(file);
       });
@@ -65,7 +66,7 @@ export default class PdfGenerator {
         this.compressFile(filename).then(() => {
 
           // clean up tmp files
-          console.log("cleaning up temporary files ...");
+          log("cleaning up temporary files ...");
           //precompiledFiles.push(list);
           precompiledFiles.forEach((file) => {
             fs.unlink(file, (err) => {
@@ -74,6 +75,11 @@ export default class PdfGenerator {
               }
             })
           });
+
+          // stream the file
+          if (Cli.argv.stdout) {
+            this.streamFile(filename);
+          }
         });
       });
     })
@@ -96,7 +102,7 @@ export default class PdfGenerator {
       wkhtmltopdf(url, {userStyleSheet: 'file://' + process.cwd() + '/print.css', marginTop: 15, marginRight: 15, marginBottom: 15, marginLeft: 15}).pipe(
         fs.createWriteStream(filename)
         .on('finish', () => {
-          //console.log("Created:" + filename); 
+          //log("Created:" + filename); 
           resolve()
         })
       );
@@ -116,7 +122,7 @@ export default class PdfGenerator {
     // compress the document
     return new Promise((resolve, reject) => {
       if (Cli.argv.compress) {
-        console.log("Compressing file " + filename + ' ...'); 
+        log("Compressing file " + filename + ' ...'); 
         gs()
           .device( 'pdfwrite' )
           .option( '-dCompatibilityLevel=1.4' )
@@ -138,5 +144,17 @@ export default class PdfGenerator {
         resolve("Skipping compression");
       }
     });
+  }
+
+  /**
+   * Stream the file to std output
+   *
+   * @param string filename The filename of the PDF which will be compressed
+   */
+  async streamFile(filename)
+  {
+    if (Cli.argv.stdout) {
+      await fs.createReadStream(filename).pipe(process.stdout)
+    }
   }
 }

@@ -3,6 +3,7 @@ import Cli from './Cli.js';
 import fs from 'fs';
 import got from 'got';
 import { JSDOM } from 'jsdom';
+import log from './tools.js';
 
 /**
  * Crawl a docusaurus URL and scrape the data
@@ -31,13 +32,13 @@ export default class Crawler
       Cli.argv.prepend.split(',').map(item => {
         const url = item.match(/^https?:\/\//) ? item : `${this.baseUrl}${this.scope}${item}`;
         this.buffer.add(url);
-        console.log(`Got link: ${url} [prepend]`);
+        log(`Got link: ${url} [prepend]`);
       });
     }
 
     // include index
     if (Cli.argv.includeIndex) {
-      console.log(`Got link: ${this.baseUrl}${this.scope} [index]`);
+      log(`Got link: ${this.baseUrl}${this.scope} [index]`);
       this.buffer.add(`${this.baseUrl}${this.scope}`);
     }
   }
@@ -75,7 +76,7 @@ export default class Crawler
 
       if (nextLinkEl) {
         const nextLink = `${this.baseUrl}${nextLinkEl.href}`;
-        console.log(`Got link: ${nextLink}`);
+        log(`Got link: ${nextLink}`);
         if (!this.buffer.has(nextLink)) {
           this.buffer.add(nextLink);
           this.requestPage(nextLink);
@@ -86,7 +87,7 @@ export default class Crawler
         this.genDoc(url);
       }
     }).catch(err => {
-      console.log(`Error:`, err);
+      log(`Error:`, err);
     });
 
     return this;
@@ -94,21 +95,21 @@ export default class Crawler
 
   genDoc(url)
   {
-    console.log('No next link found!');
+    log('No next link found!');
 
     // append additional urls
     if (Cli.argv.append) {
       Cli.argv.append.split(',').map(item => {
         const url = item.match(/^https?:\/\//) ? item : `${this.baseUrl}${this.scope}${item}`;
         this.buffer.add(url);
-        console.log(`Got link: ${url} [append]`);
+        log(`Got link: ${url} [append]`);
       });
     }
 
     // write the data buffer to the list file
     if (this.buffer.size > 0) {
       fs.writeFileSync(this.listFile, [...this.buffer].join('\n'), async err => {
-        console.log(`Writing buffer (${this.buffer.size} links) to ${this.listFile}`);
+        log(`Writing buffer (${this.buffer.size} links) to ${this.listFile}`);
         if (err) {
           console.error(err);
           return;
@@ -120,7 +121,7 @@ export default class Crawler
         this.pdfGenerator.generate(this.listFile, this.pdfFile, this.tocHTML);
       }
     } else {
-      console.log('No buffer to write!');
+      log('No buffer to write!');
     }
 
   }

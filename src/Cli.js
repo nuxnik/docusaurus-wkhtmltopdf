@@ -68,6 +68,14 @@ export default class Cli
       description: 'Compress the output file. REQUIRES ghostscript!',
       type: 'bolean',
     })
+    .option('stdout', {
+      description: 'Stream PDF to stdout',
+      type: 'bolean',
+    })
+    .option('quiet', {
+      description: 'silence console output.',
+      type: 'bolean',
+    })
     .help()
     .alias('help', 'h')
     .argv;

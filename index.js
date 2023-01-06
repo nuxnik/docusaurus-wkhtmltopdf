@@ -6,6 +6,7 @@ import Crawler from './src/Crawler.js';
 import PDFMerger from 'pdf-merger-js';
 import PdfGenerator from './src/PdfGenerator.js';
 import commandExists from 'command-exists';
+import log from './src/tools.js';
 import fs from 'fs';
 
 // get the arguments
@@ -40,6 +41,10 @@ commands.forEach((command) => {
     promises.push(commandExists(command));
 });
 
+if (Cli.argv.sdtout) {
+  Cli.argv.quiet = true;
+}
+
 Promise.all(promises).then(() => {
 
   // All is good. Make output folder
@@ -57,7 +62,7 @@ Promise.all(promises).then(() => {
 }).catch(err => {
 
   // throw error and exit
-  console.log(`Error: the following software must be installed on this machine: ` + commands);
-  console.log(err);
+  log(`Error: the following software must be installed on this machine: ` + commands);
+  log(err);
   process.exit(11);
 });
