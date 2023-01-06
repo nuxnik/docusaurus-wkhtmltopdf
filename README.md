@@ -37,10 +37,10 @@ Here are a few examples of this software in action. Run the following commands t
 
 ```bash
 # Genrate PDF from specific site under `docs` scope
-npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs
+npx docusaurus-wkhtmltopdf -u https://docusaurus.io/docs
 
 # Example with more flags: create table of contents, compress the file, and pipe to stdout
-npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --compress --toc --stdout > documentation.pdf
+npx docusaurus-wkhtmltopdf -u https://docusaurus.io/docs --compress --toc --stdout > documentation.pdf
 ```
 
 To generate PDF from a local Docusaurus instance. You need to first build the site locally:
@@ -62,10 +62,10 @@ The docker image comes with a working environment so no other external software 
 
 ```bash
 # Generate PDF from specific site under `docs` scope. Please note that the folder with the generated file can be found in /tmp/pdf
-docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs
+docker run --rm -v /tmp/pdf:/d2p/pdf nuxnik/docusaurus-to-pdf -u https://docusaurus.io/docs
 
 # Let's use some more flags: create table of contents, compress the file, and pipe from stdout to documentation.pdf
-docker run --rm nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs --toc --compress --stdout > documentation.pdf
+docker run --rm nuxnik/docusaurus-to-pdf -u https://docusaurus.io/docs --toc --compress --stdout > documentation.pdf
 ```
 
 ## Modifications
@@ -73,6 +73,6 @@ docker run --rm nuxnik/docusaurus-to-pdf -u https://https://docusaurus.io/docs -
 Like [mr-pdf](https://github.com/kohheepeace/mr-pdf), this package looks for the next pagination links on generated Docusaurus site. Collect them in a list and then pass the list to wkhtmltopdf to generate the PDF. You can specify the CSS selector if you're using a custom Docusaurus theme:
 
 ```bash
-npx docusaurus-wkhtmltopdf -u https://https://docusaurus.io/docs --selector 'nav.custom-pagination-item--next > a'
+npx docusaurus-wkhtmltopdf -u https://docusaurus.io/docs --selector 'nav.custom-pagination-item--next > a'
 ```
 You can also customize the CSS of the pages which are scraped by the crawler by modifying "print.css" file located in the project root. This CSS file is applied to the pages before being processed through Wkhtmltopdf. Depending on how this file is modified, will change the overall look of the generated PDF file.
